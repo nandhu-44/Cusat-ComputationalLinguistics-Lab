@@ -1,86 +1,78 @@
+"""Rule-based English tokenizer.
+
+Requirements implemented:
+1. Punctuation & special symbols become separate tokens.
+2. Contractions like "isn't" -> ["is", "n't"] (Treebank style; e.g. "can't" -> ["ca", "n't"].)
+3. Abbreviations comprised of ALL CAPS letters (e.g. USA, NATO) kept as single tokens.
+4. Internal hyphenated words (e.g. ice-cream, twenty-one) kept as single tokens.
+
+Usage:
+	python main_gpt.py [optional_path_to_input_file]
+
+If no path is provided it defaults to "input.txt" in the same directory.
+"""
+
+from __future__ import annotations
+
 import re
+import sys
+from pathlib import Path
+from typing import List, Iterable
 
-def tokenize_text(text):
-    """
-    Simple rule-based tokenizer for English text using regex.
-    Handles punctuation, contractions, abbreviations, and hyphenated words.
-    """
-    
-    # Define tokenization patterns (order matters)
-    patterns = [
-        # Contractions: n't, 'll, 're, 've, 'd, 's
-        r"n't\b",           # isn't -> is + n't
-        r"'ll\b",           # I'll -> I + 'll  
-        r"'re\b",           # you're -> you + 're
-        r"'ve\b",           # I've -> I + 've
-        r"'d\b",            # I'd -> I + 'd
-        r"'s\b",            # John's -> John + 's
-        
-        # Abbreviations (2-5 uppercase letters)
-        r"\b[A-Z]{2,5}\b",  # USA, NATO, FBI
-        
-        # Hyphenated words (letters-letters)
-        r"\b\w+(?:-\w+)+\b", # ice-cream, twenty-one
-        
-        # Words (letters, numbers, underscores)
-        r"\b\w+\b",
-        
-        # Punctuation and special symbols (each as separate token)
-        r"[^\w\s]"
-    ]
-    
-    # Combine all patterns
-    token_pattern = '|'.join(f'({pattern})' for pattern in patterns)
-    
-    # Find all matches
-    matches = re.findall(token_pattern, text)
-    
-    # Extract non-empty tokens
-    tokens = []
-    for match in matches:
-        for group in match:
-            if group:
-                tokens.append(group)
-                break
-    
-    return tokens
 
-def tokenize_file(filename):
-    """Read text from file and tokenize it."""
-    try:
-        with open(filename, 'r', encoding='utf-8') as file:
-            text = file.read()
-        return tokenize_text(text)
-    except FileNotFoundError:
-        print(f"File '{filename}' not found.")
-        return []
+# Precompile a regex that captures tokens according to the required precedence.
+# Order matters: more specific / longer multi-char tokens should appear first.
+TOKEN_PATTERN = re.compile(
+	r"""
+	(?:[A-Z]{2,})                                  # 1. Abbreviations (ALL CAPS, length>=2)
+	| (?:[A-Za-z]+(?:-[A-Za-z]+)+)                 # 2. Hyphenated words (letters-hyphen-letters)
+	| (?:[A-Za-z]+(?=n't\b))                      # 3. Base of negative contractions (is in isn't, ca in can't)
+	| (?:n't\b)                                   # 4. The contracted n't ending
+	| (?:[A-Za-z]+(?='(?:re|ve|ll|d|s|m)\b))      # 5. Base before other common endings ('s, 're, ...)
+	| (?:'(?:re|ve|ll|d|s|m)\b)                   # 6. Contraction endings themselves
+	| (?:\d+(?:-\d+)*)                           # 7. Numbers (optionally hyphenated)
+	| (?:[A-Za-z]+)                                # 8. Plain words
+	| (?:[^\sA-Za-z0-9])                          # 9. Any single non-space, non-alnum char (punct / symbol)
+	""",
+	re.VERBOSE,
+)
 
-# Test the tokenizer
-if __name__ == "__main__":
-    # Test with sample text
-    sample_text = """
-    Hello world! I can't believe it's working. 
-    The USA and NATO won't cooperate. 
-    Ice-cream costs twenty-one dollars.
-    Dr. Smith's email: john@example.com (555) 123-4567.
-    """
-    
-    print("Sample Text:")
-    print(sample_text)
-    print("\nTokens:")
-    tokens = tokenize_text(sample_text)
-    for i, token in enumerate(tokens, 1):
-        print(f"{i:2d}: '{token}'")
-    
-    # Test with file input
-    print("\n" + "="*50)
-    print("Testing with input file...")
-    
-    # Create sample input file
-    with open('input.txt', 'w', encoding='utf-8') as f:
-        f.write(sample_text)
-    
-    file_tokens = tokenize_file('input.txt')
-    print(f"Tokens from file: {len(file_tokens)}")
-    for i, token in enumerate(file_tokens, 1):  # Show all tokens
-        print(f"{i:2d}: '{token}'")
+
+def tokenize(text: str) -> List[str]:
+	"""Tokenize input English text per the specified heuristic rules.
+
+	Steps:
+	  1. Use a master regex to extract tokens preserving order.
+	  2. Filter out stray whitespace (regex avoids matching it anyway).
+	"""
+	tokens = TOKEN_PATTERN.findall(text)
+	return [t for t in tokens if t and not t.isspace()]
+
+
+def iter_file_text(path: Path) -> Iterable[str]:
+	"""Yield file contents as a single string; small helper for clarity."""
+	yield path.read_text(encoding="utf-8", errors="replace")
+
+
+def main(argv: List[str]) -> int:
+	if len(argv) > 1:
+		input_path = Path(argv[1])
+	else:
+		input_path = Path(__file__).with_name("input.txt")
+
+	if not input_path.exists():
+		print(f"Input file not found: {input_path}", file=sys.stderr)
+		return 1
+
+	text = input_path.read_text(encoding="utf-8", errors="replace")
+	tokens = tokenize(text)
+
+	# Print one token per line for easy inspection.
+	for tok in tokens:
+		print(tok)
+
+	return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+	raise SystemExit(main(sys.argv))

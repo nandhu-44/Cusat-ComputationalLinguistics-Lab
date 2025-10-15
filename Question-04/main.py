@@ -81,13 +81,12 @@ def main():
     # Dictionary V
     V = {"word", "world", "work", "worm", "worth"}
 
-    # Prior probabilities for each word in V (based on approximate English frequencies)
     prior_probs = {
-        "word": 0.3,   # Common word
-        "world": 0.25, # Very common
-        "work": 0.2,   # Common
-        "worm": 0.15,  # Less common
-        "worth": 0.1   # Less common
+        "word": 0.3, 
+        "world": 0.25,
+        "work": 0.2,
+        "worm": 0.15,
+        "worth": 0.1
     }
 
     # Misspelled word s (transposition error from "word")

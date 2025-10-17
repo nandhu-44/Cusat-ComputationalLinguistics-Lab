@@ -1,8 +1,11 @@
 """Implement a text classifier for sentiment analysis using naive bayes theorem"""
 
 import re
+import csv
+import os
 from collections import defaultdict, Counter
 from math import log
+from random import sample
 
 
 class Colors:
@@ -20,6 +23,38 @@ def colorize(text, sentiment):
     elif sentiment.lower() == 'negative':
         return f"{Colors.RED}{text}{Colors.RESET}"
     return text
+
+
+def load_csv_data(train_file='train.csv', test_file='test.csv', max_samples=None):
+    """Load sentiment data from CSV files"""
+    train_docs, train_labels = [], []
+    test_docs, test_labels = [], []
+    
+    if os.path.exists(train_file):
+        with open(train_file, 'r', encoding='utf-8', errors='ignore') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if 'text' in row and 'sentiment' in row:
+                    sentiment = row['sentiment'].strip().lower()
+                    if sentiment in ['positive', 'negative']:
+                        train_docs.append(row['text'])
+                        train_labels.append(sentiment)
+                        if max_samples and len(train_docs) >= max_samples:
+                            break
+    
+    if os.path.exists(test_file):
+        with open(test_file, 'r', encoding='utf-8', errors='ignore') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if 'text' in row and 'sentiment' in row:
+                    sentiment = row['sentiment'].strip().lower()
+                    if sentiment in ['positive', 'negative']:
+                        test_docs.append(row['text'])
+                        test_labels.append(sentiment)
+                        if max_samples and len(test_docs) >= max_samples // 4:
+                            break
+    
+    return train_docs, train_labels, test_docs, test_labels
 
 
 class NaiveBayesSentimentClassifier:
@@ -86,89 +121,70 @@ def main():
     print("Naive Bayes Sentiment Analysis Classifier")
     print("=" * 80)
     
-    train_data = [
-        ("I love this movie it is amazing", "positive"),
-        ("This is a great film wonderful acting", "positive"),
-        ("Excellent movie highly recommended", "positive"),
-        ("Best film I have seen in years", "positive"),
-        ("Fantastic performance by the actors", "positive"),
-        ("I hate this movie it is terrible", "negative"),
-        ("This film is awful and boring", "negative"),
-        ("Worst movie ever made", "negative"),
-        ("Terrible acting and bad plot", "negative"),
-        ("Horrible film waste of time", "negative"),
-    ]
+    train_docs, train_labels, test_docs, test_labels = load_csv_data(
+        train_file='train.csv',
+        test_file='test.csv',
+        max_samples=2000
+    )
     
-    test_data = [
-        ("This movie is great and amazing", "positive"),
-        ("I really love the wonderful acting", "positive"),
-        ("This is terrible and awful", "negative"),
-        ("Horrible movie I hate it", "negative"),
-    ]
+    print(f"\nTrain: {len(train_docs)} | Test: {len(test_docs)}")
     
-    train_docs = [doc for doc, _ in train_data]
-    train_labels = [label for _, label in train_data]
-    test_docs = [doc for doc, _ in test_data]
-    test_labels = [label for _, label in test_data]
-    
-    print("\nTraining Data:")
-    print("-" * 80)
-    for doc, label in train_data[:3]:
-        colored_label = colorize(label.upper(), label)
-        print(f"[{colored_label}] {doc}")
-    print(f"... ({len(train_data)} total training samples)")
+    train_sentiment_counts = Counter(train_labels)
+    for sentiment, count in train_sentiment_counts.items():
+        print(f"  {colorize(sentiment, sentiment)}: {count}")
     
     classifier = NaiveBayesSentimentClassifier()
     classifier.train(train_docs, train_labels)
     
-    print("\n" + "=" * 80)
-    print("Model Statistics")
-    print("=" * 80)
-    print(f"Vocabulary size: {len(classifier.vocabulary)}")
-    print(f"Class distribution:")
-    for label, count in classifier.class_counts.items():
-        prob = count / classifier.total_docs
-        print(f"  {label}: {count} documents (P({label}) = {prob:.3f})")
+    print(f"\nVocabulary: {len(classifier.vocabulary)} words")
     
     print("\n" + "=" * 80)
-    print("Testing Phase")
+    print("Sample Predictions (20 random)")
     print("=" * 80)
     
-    for doc, true_label in test_data:
-        pred_label, probs = classifier.predict(doc)
-        print(f"\nDocument: \"{doc}\"")
-        print(f"True label: {colorize(true_label, true_label)}")
-        print(f"Predicted: {colorize(pred_label, pred_label)}")
-        print(f"Log probabilities:")
-        for label, prob in probs.items():
-            colored_label = colorize(label, label)
-            print(f"  P({colored_label}|document) ∝ {prob:.4f}")
-        result_color = Colors.GREEN if pred_label == true_label else Colors.RED
-        print(f"Result: {result_color}{'✓ CORRECT' if pred_label == true_label else '✗ WRONG'}{Colors.RESET}")
+    random_indices = sample(range(len(test_docs)), min(20, len(test_docs)))
     
+    for idx in random_indices:
+        doc = test_docs[idx]
+        true_label = test_labels[idx]
+        pred_label, _ = classifier.predict(doc)
+        
+        text = doc[:60] + '...' if len(doc) > 60 else doc
+        result = '✓' if pred_label == true_label else '✗'
+        color = Colors.GREEN if pred_label == true_label else Colors.RED
+        print(f"{color}{result}{Colors.RESET} \"{text}\"")
+        print(f"  True: {colorize(true_label, true_label)} → Pred: {colorize(pred_label, pred_label)}\n")
+    
+    print("=" * 80)
+    print("Final Results")
+    print("=" * 80)
     accuracy, predictions = classifier.evaluate(test_docs, test_labels)
     
-    print("\n" + "=" * 80)
-    print("Evaluation Results")
-    print("=" * 80)
-    print(f"Accuracy: {accuracy * 100:.2f}%")
-    print(f"Correct predictions: {sum(p == t for p, t in zip(predictions, test_labels))}/{len(test_labels)}")
+    correct = sum(p == t for p, t in zip(predictions, test_labels))
+    acc_color = Colors.GREEN if accuracy > 0.7 else Colors.RED
+    print(f"Accuracy: {acc_color}{accuracy * 100:.2f}%{Colors.RESET} ({correct}/{len(test_labels)})")
+    
+    tp = sum(1 for p, t in zip(predictions, test_labels) if p == 'positive' and t == 'positive')
+    tn = sum(1 for p, t in zip(predictions, test_labels) if p == 'negative' and t == 'negative')
+    fp = sum(1 for p, t in zip(predictions, test_labels) if p == 'positive' and t == 'negative')
+    fn = sum(1 for p, t in zip(predictions, test_labels) if p == 'negative' and t == 'positive')
+    
+    print(f"TP: {Colors.GREEN}{tp}{Colors.RESET} | TN: {Colors.GREEN}{tn}{Colors.RESET} | FP: {Colors.RED}{fp}{Colors.RESET} | FN: {Colors.RED}{fn}{Colors.RESET}")
     
     print("\n" + "=" * 80)
-    print("Interactive Testing")
+    print("Custom Examples")
     print("=" * 80)
     
-    custom_tests = [
-        "This is absolutely wonderful",
-        "I hate everything about this",
-        "Amazing and fantastic experience",
-        "Boring and terrible waste"
+    tests = [
+        "This is absolutely wonderful and amazing",
+        "I hate everything about this terrible movie",
+        "Best experience ever, highly recommend",
+        "Boring waste of time"
     ]
     
-    for test_text in custom_tests:
-        pred, probs = classifier.predict(test_text)
-        print(f"\n\"{test_text}\"")
-        print(f"→ Predicted: {colorize(pred.upper(), pred)}")
+    for text in tests:
+        pred, _ = classifier.predict(text)
+        print(f"\"{text[:50]}{'...' if len(text) > 50 else ''}\" → {colorize(pred.upper(), pred)}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,49 @@
+Vocabulary size: 66 words                                                                                                               
+Vector dimensions: 50
+
+Word Similarities:
+
+'learning' is similar to:
+  involves: 0.389
+  oxygen: 0.385
+  swim: 0.368
+  is: 0.368
+  can: 0.357
+
+'machine' is similar to:
+  mat: 0.304
+  of: 0.252
+  computer: 0.224
+  machines: 0.220
+  water: 0.219
+
+'cat' is similar to:
+  helps: 0.273
+  birds: 0.200
+  neural: 0.191
+  trees: 0.179
+  the: 0.172
+
+'python' is similar to:
+  trains: 0.270
+  are: 0.269
+  fly: 0.220
+  computer: 0.179
+  finds: 0.174
+
+'data' is similar to:
+  used: 0.327
+  is: 0.298
+  processing: 0.286
+  for: 0.275
+  part: 0.264
+
+Vector Space Representation:
+machine: [-0.016, 0.019, 0.000, ...]
+learning: [0.000, -0.000, 0.012, ...]
+deep: [0.008, 0.008, 0.020, ...]
+python: [0.000, 0.004, 0.002, ...]
+
+Generating Clusters and Plots:
+Saved plot: word_clusters_pca.png
+Saved plot: word_clusters_tsne.png

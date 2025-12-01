@@ -76,26 +76,15 @@ def find_similar_words(model, word, topn=5):
 
 
 def main():
-    print("=" * 80)
-    print("Word Clustering with Word2Vec")
-    print("=" * 80)
-    
     corpus = create_corpus()
-    print(f"\nCorpus: {len(corpus)} sentences")
-    print("Sample sentences:")
-    for sent in corpus[:3]:
-        print(f"  - {sent}")
     
-    print("\nTraining Word2Vec...")
     model = train_word2vec(corpus, vector_size=50, window=3)
     
     vocab_size = len(model.wv)
     print(f"Vocabulary size: {vocab_size} words")
     print(f"Vector dimensions: {model.wv.vector_size}")
     
-    print("\n" + "=" * 80)
-    print("Word Similarities")
-    print("=" * 80)
+    print("\nWord Similarities:")
     
     test_words = ['learning', 'machine', 'cat', 'python', 'data']
     
@@ -106,9 +95,7 @@ def main():
             for sim_word, score in similar:
                 print(f"  {sim_word}: {score:.3f}")
     
-    print("\n" + "=" * 80)
-    print("Vector Space Representation")
-    print("=" * 80)
+    print("\nVector Space Representation:")
     
     sample_words = ['machine', 'learning', 'deep', 'python']
     for word in sample_words:
@@ -116,16 +103,9 @@ def main():
             vec = model.wv[word]
             print(f"{word}: [{vec[0]:.3f}, {vec[1]:.3f}, {vec[2]:.3f}, ...]")
     
-    print("\n" + "=" * 80)
-    print("Generating Visualizations...")
-    print("=" * 80)
-    
-    print("\n1. PCA Visualization:")
-    cluster_and_plot(model, method='pca')
-    
-    print("\n2. t-SNE Visualization:")
+    print("\nGenerating Clusters and Plots:")
+    cluster_and_plot(model, method='pca')    
     cluster_and_plot(model, method='tsne')
-
 
 if __name__ == "__main__":
     main()

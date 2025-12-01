@@ -75,7 +75,7 @@ def extract_formatted_phone_numbers(text):
 def main():
     # Read input from file
     try:
-        with open('input_text.txt', 'r', encoding='utf-8') as file:
+        with open('input.txt', 'r', encoding='utf-8') as file:
             text = file.read()
         
         print("Original Text:")

@@ -79,9 +79,6 @@ def load_imdb_data(filename='IMDB Dataset.csv', train_size=5000, test_size=1000)
 
 
 def main():
-    print("=" * 80)
-    print("IMDB 50K Dataset - Naive Bayes Classifier")
-    print("=" * 80)
     
     train_docs, train_labels, test_docs, test_labels = load_imdb_data(
         filename='IMDB Dataset.csv',
@@ -95,16 +92,12 @@ def main():
     for sentiment, count in train_counts.items():
         print(f"  {colorize(sentiment, sentiment)}: {count}")
     
-    print(f"\n{Colors.CYAN}Training...{Colors.RESET}")
     classifier = NaiveBayesSentimentClassifier()
     classifier.train(train_docs, train_labels)
-    print(f"Vocabulary: {len(classifier.vocabulary)} words")
     
-    print("\n" + "=" * 80)
-    print("Sample Predictions (20 random)")
-    print("=" * 80)
+    print("\nSample Predictions (10 random):")
     
-    random_indices = sample(range(len(test_docs)), min(20, len(test_docs)))
+    random_indices = sample(range(len(test_docs)), min(10, len(test_docs)))
     
     for idx in random_indices:
         doc = test_docs[idx]
@@ -117,9 +110,7 @@ def main():
         print(f"{color}{symbol}{Colors.RESET} \"{text}\"")
         print(f"  True: {colorize(true, true)} → Pred: {colorize(pred, pred)}\n")
     
-    print("=" * 80)
-    print("Final Results")
-    print("=" * 80)
+    print("\nFinal Results:")
     
     accuracy = classifier.evaluate(test_docs, test_labels)
     predictions = [classifier.predict(doc) for doc in test_docs]
@@ -134,7 +125,6 @@ def main():
     fn = sum(1 for p, t in zip(predictions, test_labels) if p == 'negative' and t == 'positive')
     
     print(f"TP: {Colors.GREEN}{tp}{Colors.RESET} | TN: {Colors.GREEN}{tn}{Colors.RESET} | FP: {Colors.RED}{fp}{Colors.RESET} | FN: {Colors.RED}{fn}{Colors.RESET}")
-
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,172 @@
+PARALLEL CORPUS:                                                                                        
+1. English:   the cat is sleeping                                                                       
+   Malayalam: poocha urangunnund
+2. English:   the dog is barking
+   Malayalam: naay kurakkunnund
+3. English:   cat and dog are friends
+   Malayalam: poocha naay snehithamar
+4. English:   the house is big
+   Malayalam: veedu valuthaan
+5. English:   big cat in the house
+   Malayalam: valiya poocha veetil
+
+WORD COUNTS:
+English words:
+  and: 1
+  are: 1
+  barking: 1
+  big: 2
+  cat: 3
+  dog: 2
+  friends: 1
+  house: 2
+  in: 1
+  is: 3
+  sleeping: 1
+  the: 4
+
+Malayalam words:
+  kurakkunnund: 1
+  naay: 2
+  poocha: 3
+  snehithamar: 1
+  urangunnund: 1
+  valiya: 1
+  valuthaan: 1
+  veedu: 1
+  veetil: 1
+
+TRANSLATION PROBABILITIES P(Malayalam|English):
+'and' translates to:
+  'poocha': 1.000 (1/1)
+  'naay': 1.000 (1/1)
+  'snehithamar': 1.000 (1/1)
+'are' translates to:
+  'poocha': 1.000 (1/1)
+  'naay': 1.000 (1/1)
+  'snehithamar': 1.000 (1/1)
+'barking' translates to:
+  'naay': 1.000 (1/1)
+  'kurakkunnund': 1.000 (1/1)
+'big' translates to:
+  'veedu': 0.500 (1/2)
+  'valuthaan': 0.500 (1/2)
+  'valiya': 0.500 (1/2)
+  'poocha': 0.500 (1/2)
+  'veetil': 0.500 (1/2)
+'cat' translates to:
+  'poocha': 1.000 (3/3)
+  'urangunnund': 0.333 (1/3)
+  'naay': 0.333 (1/3)
+  'snehithamar': 0.333 (1/3)
+  'valiya': 0.333 (1/3)
+  'veetil': 0.333 (1/3)
+'dog' translates to:
+  'naay': 1.000 (2/2)
+  'kurakkunnund': 0.500 (1/2)
+  'poocha': 0.500 (1/2)
+  'snehithamar': 0.500 (1/2)
+'friends' translates to:
+  'poocha': 1.000 (1/1)
+  'naay': 1.000 (1/1)
+  'snehithamar': 1.000 (1/1)
+'house' translates to:
+  'veedu': 0.500 (1/2)
+  'valuthaan': 0.500 (1/2)
+  'valiya': 0.500 (1/2)
+  'poocha': 0.500 (1/2)
+  'veetil': 0.500 (1/2)
+'in' translates to:
+  'valiya': 1.000 (1/1)
+  'poocha': 1.000 (1/1)
+  'veetil': 1.000 (1/1)
+'is' translates to:
+  'poocha': 0.333 (1/3)
+  'urangunnund': 0.333 (1/3)
+  'naay': 0.333 (1/3)
+  'kurakkunnund': 0.333 (1/3)
+  'veedu': 0.333 (1/3)
+  'valuthaan': 0.333 (1/3)
+'sleeping' translates to:
+  'poocha': 1.000 (1/1)
+  'urangunnund': 1.000 (1/1)
+'the' translates to:
+  'poocha': 0.500 (2/4)
+  'urangunnund': 0.250 (1/4)
+  'naay': 0.250 (1/4)
+  'kurakkunnund': 0.250 (1/4)
+  'veedu': 0.250 (1/4)
+  'valuthaan': 0.250 (1/4)
+  'valiya': 0.250 (1/4)
+  'veetil': 0.250 (1/4)
+
+TRANSLATION PROBABILITIES P(English|Malayalam):
+'kurakkunnund' translates to:
+  'the': 1.000 (1/1)
+  'is': 1.000 (1/1)
+  'dog': 1.000 (1/1)
+  'barking': 1.000 (1/1)
+'naay' translates to:
+  'dog': 1.000 (2/2)
+  'the': 0.500 (1/2)
+  'cat': 0.500 (1/2)
+  'is': 0.500 (1/2)
+  'barking': 0.500 (1/2)
+  'and': 0.500 (1/2)
+  'are': 0.500 (1/2)
+  'friends': 0.500 (1/2)
+'poocha' translates to:
+  'cat': 1.000 (3/3)
+  'the': 0.667 (2/3)
+  'is': 0.333 (1/3)
+  'sleeping': 0.333 (1/3)
+  'dog': 0.333 (1/3)
+  'and': 0.333 (1/3)
+  'are': 0.333 (1/3)
+  'friends': 0.333 (1/3)
+  'house': 0.333 (1/3)
+  'big': 0.333 (1/3)
+  'in': 0.333 (1/3)
+'snehithamar' translates to:
+  'cat': 1.000 (1/1)
+  'dog': 1.000 (1/1)
+  'and': 1.000 (1/1)
+  'are': 1.000 (1/1)
+  'friends': 1.000 (1/1)
+'urangunnund' translates to:
+  'the': 1.000 (1/1)
+  'cat': 1.000 (1/1)
+  'is': 1.000 (1/1)
+  'sleeping': 1.000 (1/1)
+'valiya' translates to:
+  'the': 1.000 (1/1)
+  'cat': 1.000 (1/1)
+  'house': 1.000 (1/1)
+  'big': 1.000 (1/1)
+  'in': 1.000 (1/1)
+'valuthaan' translates to:
+  'the': 1.000 (1/1)
+  'is': 1.000 (1/1)
+  'house': 1.000 (1/1)
+  'big': 1.000 (1/1)
+'veedu' translates to:
+  'the': 1.000 (1/1)
+  'is': 1.000 (1/1)
+  'house': 1.000 (1/1)
+  'big': 1.000 (1/1)
+'veetil' translates to:
+  'the': 1.000 (1/1)
+  'cat': 1.000 (1/1)
+  'house': 1.000 (1/1)
+  'big': 1.000 (1/1)
+  'in': 1.000 (1/1)
+
+EXAMPLE TRANSLATIONS:
+Most likely translation of 'cat' (English → Malayalam):
+  'poocha' with probability 1.000
+Most likely translation of 'poocha' (Malayalam → English):
+  'cat' with probability 1.000
+Most likely translation of 'house' (English → Malayalam):
+  'veedu' with probability 0.500
+Most likely translation of 'veedu' (Malayalam → English):
+  'the' with probability 1.000

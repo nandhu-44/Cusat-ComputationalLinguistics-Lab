@@ -1,78 +1,94 @@
-# Q7 - FINAL CORRECT VERSION: IBM Model 1 (English → French)
 from collections import defaultdict
 
-# === 5 Clean Parallel Sentences ===
-english = [
-    "the cat is on the mat",
-    "a dog runs in the park",
-    "i love this beautiful book",
-    "we are very happy today",
-    "she reads a newspaper"
+parallel_corpus = [
+    ("the cat is sleeping", "poocha urangunnund"),
+    ("the dog is barking", "naay kurakkunnund"),
+    ("cat and dog are friends", "poocha naay snehithamar"),
+    ("the house is big", "veedu valuthaan"),
+    ("big cat in the house", "valiya poocha veetil")
 ]
 
-french = [
-    "le chat est sur le tapis",
-    "un chien court dans le parc",
-    "j aime ce beau livre",
-    "nous sommes très heureux aujourd hui",
-    "elle lit un journal"
-]
+def compute_translation_probabilities(corpus):
+    """
+    Compute P(f|e) and P(e|f) from parallel corpus.
+    f = foreign (Malayalam), e = English
+    """
+    count_ef = defaultdict(lambda: defaultdict(int))
+    count_e = defaultdict(int)
+    count_f = defaultdict(int)
+    
+    for english, malayalam in corpus:
+        e_words = english.split()
+        f_words = malayalam.split()
+        
+        for e in e_words:
+            count_e[e] += 1
+            for f in f_words:
+                count_ef[e][f] += 1
+        
+        for f in f_words:
+            count_f[f] += 1
+    
+    p_f_given_e = defaultdict(dict)
+    for e in count_ef:
+        for f in count_ef[e]:
+            p_f_given_e[e][f] = count_ef[e][f] / count_e[e]
+    
+    p_e_given_f = defaultdict(dict)
+    for e in count_ef:
+        for f in count_ef[e]:
+            p_e_given_f[f][e] = count_ef[e][f] / count_f[f]
+    
+    return p_f_given_e, p_e_given_f, count_ef, count_e, count_f
 
-# Tokenize
-e_sents = [sent.split() for sent in english]
-f_sents = [sent.split() for sent in french]
 
-# Vocabularies
-e_vocab = set(word for sent in e_sents for word in sent)
-f_vocab = set(word for sent in f_sents for word in sent)
+def display_results(p_f_given_e, p_e_given_f, count_ef, count_e, count_f):
+    """Display translation probabilities in a readable format."""
+    print("PARALLEL CORPUS:")
+    for i, (eng, mal) in enumerate(parallel_corpus, 1):
+        print(f"{i}. English:   {eng}")
+        print(f"   Malayalam: {mal}")
+    
+    print("\nWORD COUNTS:")
+    print("English words:")
+    for word, count in sorted(count_e.items()):
+        print(f"  {word}: {count}")
+    
+    print("\nMalayalam words:")
+    for word, count in sorted(count_f.items()):
+        print(f"  {word}: {count}")
+    
+    print("\nTRANSLATION PROBABILITIES P(Malayalam|English):")
+    for e in sorted(p_f_given_e.keys()):
+        print(f"'{e}' translates to:")
+        for f, prob in sorted(p_f_given_e[e].items(), key=lambda x: -x[1]):
+            print(f"  '{f}': {prob:.3f} ({count_ef[e][f]}/{count_e[e]})")
+    
+    print("\nTRANSLATION PROBABILITIES P(English|Malayalam):")
+    for f in sorted(p_e_given_f.keys()):
+        print(f"'{f}' translates to:")
+        for e, prob in sorted(p_e_given_f[f].items(), key=lambda x: -x[1]):
+            print(f"  '{e}': {prob:.3f} ({count_ef[e][f]}/{count_f[f]})")
 
-# === ADD NULL TOKEN PROPERLY ===
-NULL = None  # We'll handle it specially
-e_sents_with_null = [["NULL"] + sent for sent in e_sents]  # Prepend NULL to every English sentence
-e_vocab.add("NULL")
 
-# Initialize t(f|e) uniformly
-t = defaultdict(lambda: defaultdict(lambda: 1.0 / len(e_vocab)))
+def translate_word(word, p_trans, direction):
+    """Get most likely translation for a word."""
+    if word not in p_trans:
+        return None
+    translations = p_trans[word]
+    best_translation = max(translations.items(), key=lambda x: x[1])
+    print(f"Most likely translation of '{word}' ({direction}):")
+    print(f"  '{best_translation[0]}' with probability {best_translation[1]:.3f}")
+    return best_translation
 
-print("Running IBM Model 1 (10 iterations)...\n")
-
-# === EM Algorithm (10 iterations) ===
-for iteration in range(10):
-    count = defaultdict(lambda: defaultdict(float))
-    total = defaultdict(float)
-
-    for e_sent, f_sent in zip(e_sents_with_null, f_sents):
-        # Compute normalization
-        for f_word in f_sent:
-            denom = sum(t[f_word][e_word] for e_word in e_sent)
-            for e_word in e_sent:
-                delta = t[f_word][e_word] / denom
-                count[f_word][e_word] += delta
-                total[e_word] += delta
-
-    # Update t(f|e)
-    for f_word in f_vocab:
-        for e_word in list(e_vocab):
-            if total[e_word] > 0:
-                t[f_word][e_word] = count[f_word][e_word] / total[e_word]
-            else:
-                t[f_word][e_word] = 0.0
-
-    if iteration + 1 in [1, 5, 10]:
-        print(f"Iteration {iteration+1:2d}: P(chat|cat) = {t['chat']['cat']:.4f}, "
-              f"P(le|the) = {t['le']['the']:.4f}, P(livre|book) = {t['livre']['book']:.4f}")
-
-# === FINAL RESULTS ===
-print("\n" + "="*60)
-print("TOP TRANSLATIONS P(f|e) AFTER 10 ITERATIONS")
-print("="*60)
-results = []
-for e in sorted(e_vocab - {"NULL"}):
-    if e not in ["NULL"]:
-        best_f = max(f_vocab, key=lambda f: t[f][e])
-        prob = t[best_f][e]
-        results.append((e, best_f, round(prob, 4)))
-
-# Sort by English word
-for e, f, p in sorted(results):
-    print(f"{e:12} → {f:12} ({p})")
+if __name__ == "__main__":
+    p_f_given_e, p_e_given_f, count_ef, count_e, count_f = compute_translation_probabilities(parallel_corpus)
+    
+    display_results(p_f_given_e, p_e_given_f, count_ef, count_e, count_f)
+    
+    print("\nEXAMPLE TRANSLATIONS:")
+    
+    translate_word("cat", p_f_given_e, "English → Malayalam")
+    translate_word("poocha", p_e_given_f, "Malayalam → English")
+    translate_word("house", p_f_given_e, "English → Malayalam")
+    translate_word("veedu", p_e_given_f, "Malayalam → English")

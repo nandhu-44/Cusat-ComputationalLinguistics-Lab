@@ -1,0 +1,53 @@
+French POS Tagging Output
+==================================================
+
+Le chat mange une souris.
+Le              DET  [Definite=Def|Gender=Masc|Number=Sing|PronType=Art]
+chat            NOUN  [Gender=Masc|Number=Sing]
+mange           VERB  [Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin]
+une             DET  [Definite=Ind|Gender=Fem|Number=Sing|PronType=Art]
+souris          NOUN  [Gender=Fem|Number=Sing]
+.               PUNCT  [None]
+
+Les enfants jouent dans le jardin.
+Les             DET  [Definite=Def|Number=Plur|PronType=Art]
+enfants         NOUN  [Number=Plur]
+jouent          VERB  [Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin]
+dans            ADP  [None]
+le              DET  [Definite=Def|Gender=Masc|Number=Sing|PronType=Art]
+jardin          NOUN  [Gender=Masc|Number=Sing]
+.               PUNCT  [None]
+
+Marie et Paul sont très heureux aujourd'hui.
+Marie           PROPN  [None]
+et              CCONJ  [None]
+Paul            PROPN  [None]
+sont            AUX  [Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin]
+très            ADV  [None]
+heureux         ADJ  [Gender=Masc]
+aujourd'hui     ADV  [None]
+.               PUNCT  [None]
+
+Je vais à l'école en autobus.
+Je              PRON  [Emph=No|Number=Sing|Person=1|PronType=Prs]
+vais            VERB  [Mood=Ind|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin]
+à               ADP  [None]
+l'              DET  [Definite=Def|Number=Sing|PronType=Art]
+école           NOUN  [Gender=Fem|Number=Sing]
+en              ADP  [None]
+autobus         NOUN  [Gender=Masc|Number=Sing]
+.               PUNCT  [None]
+
+Nous aimons manger du fromage et boire du vin.
+Nous            PRON  [Emph=No|Number=Plur|Person=1|PronType=Prs]
+aimons          VERB  [Mood=Ind|Number=Plur|Person=1|Tense=Pres|VerbForm=Fin]
+manger          VERB  [VerbForm=Inf]
+de              ADP  [None]
+le              DET  [Definite=Def|Gender=Masc|Number=Sing|PronType=Art]
+fromage         NOUN  [Gender=Masc|Number=Sing]
+et              CCONJ  [None]
+boire           VERB  [VerbForm=Inf]
+de              ADP  [None]
+le              DET  [Definite=Def|Gender=Masc|Number=Sing|PronType=Art]
+vin             NOUN  [Gender=Masc|Number=Sing]
+.               PUNCT  [None]

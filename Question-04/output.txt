@@ -1,0 +1,10 @@
+Misspelled word: 'wrod'                                                                                 
+Candidates     : ['word', 'wood', 'world']
+
+------------------------------------------------------------
+P(s|word ) = 0.050 × P(word) = 0.16026 → Score = 0.0080128
+P(s|wood ) = 0.050 × P(wood) = 0.09615 → Score = 0.0048077
+P(s|world) = 0.050 × P(world) = 0.14423 → Score = 0.0072115
+------------------------------------------------------------
+Best correction → 'word' with score 0.0080128
+Original intent → 'word' Correct

@@ -1,0 +1,68 @@
+FINITE STATE AUTOMATA: English Plural Nouns Ending with 'y'                                                                                                     
+
+Rules:
+  1. Vowel + y → Vowel + ys (e.g., boy → boys)
+  2. Consonant + y → Consonant + ies (e.g., pony → ponies)
+
+TEST RESULTS:
+✓ 'boys           ' → ACCEPT   (Expected: ACCEPT)
+✓ 'toys           ' → ACCEPT   (Expected: ACCEPT)
+✓ 'ponies         ' → ACCEPT   (Expected: ACCEPT)
+✓ 'skies          ' → ACCEPT   (Expected: ACCEPT)
+✓ 'puppies        ' → ACCEPT   (Expected: ACCEPT)
+✓ 'days           ' → ACCEPT   (Expected: ACCEPT)
+✓ 'keys           ' → ACCEPT   (Expected: ACCEPT)
+✓ 'ladies         ' → ACCEPT   (Expected: ACCEPT)
+✓ 'babies         ' → ACCEPT   (Expected: ACCEPT)
+✓ 'cities         ' → ACCEPT   (Expected: ACCEPT)
+✓ 'boies          ' → REJECT   (Expected: REJECT)
+✓ 'toies          ' → REJECT   (Expected: REJECT)
+✓ 'ponys          ' → REJECT   (Expected: REJECT)
+✓ 'skys           ' → REJECT   (Expected: REJECT)
+✓ 'puppys         ' → REJECT   (Expected: REJECT)
+✓ 'boy            ' → REJECT   (Expected: REJECT)
+✓ 'pony           ' → REJECT   (Expected: REJECT)
+✓ 'cat            ' → REJECT   (Expected: REJECT)
+✓ 'cats           ' → REJECT   (Expected: REJECT)
+Accuracy: 19/19 (100%)
+
+DETAILED FSA TRACES:
+
+Tracing FSA for: 'boys'
+--------------------------------------------------
+State: q0 (start)
+Reading prefix: 'b'
+State: q1 (reading letters before 'ys')
+Character before 'ys': 'o'
+State: q2 (vowel + 'y')
+State: q3 (vowel + 'ys')
+State: q_accept (ACCEPT)
+
+Tracing FSA for: 'ponies'
+--------------------------------------------------
+State: q0 (start)
+Reading prefix: 'pon'
+State: q1 (reading letters before 'ies')
+Character before 'ies': 'n'
+State: q5 (consonant + 'i')
+State: q6 (consonant + 'ie')
+State: q7 (consonant + 'ies')
+State: q_accept (ACCEPT)
+
+Tracing FSA for: 'ponys'
+--------------------------------------------------
+State: q0 (start)
+Reading prefix: 'po'
+State: q1 (reading letters before 'ys')
+Character before 'ys': 'n'
+State: q4 (consonant + 'ys')
+State: q_reject (REJECT - consonant + ys not allowed)
+
+Tracing FSA for: 'boies'
+--------------------------------------------------
+State: q0 (start)
+Reading prefix: 'bo'
+State: q1 (reading letters before 'ies')
+Character before 'ies': 'o'
+State: q8 (vowel + 'ies')
+State: q_reject (REJECT - vowel + ies not allowed)

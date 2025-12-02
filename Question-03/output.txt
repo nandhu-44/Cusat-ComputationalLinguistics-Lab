@@ -1,0 +1,11 @@
+Input:  Hello world! I can't believe it's working.                                                      
+Tokens: ['Hello', 'world', '!', 'I', 'ca', "n't", 'believe', 'it', "'s", 'working', '.']
+
+Input:  The USA and NATO won't cooperate. 
+Tokens: ['The', 'USA', 'and', 'NATO', 'wo', "n't", 'cooperate', '.']
+
+Input:  Ice-cream costs twenty-one dollars.
+Tokens: ['Ice-cream', 'costs', 'twenty-one', 'dollars', '.']
+
+Input:  Dr. Smith's email: john@example.com (555) 123-4567.
+Tokens: ['Dr', '.', 'Smith', "'s", 'email', ':', 'john@example', '.', 'com', '(555)', '123-4567', '.']

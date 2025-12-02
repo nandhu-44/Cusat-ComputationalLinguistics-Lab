@@ -7,7 +7,7 @@ Requirements implemented:
 4. Internal hyphenated words (e.g. ice-cream, twenty-one) kept as single tokens.
 
 Usage:
-	python main_gpt.py [optional_path_to_input_file]
+	python main.py [optional_path_to_input_file]
 
 If no path is provided it defaults to "input.txt" in the same directory.
 """
